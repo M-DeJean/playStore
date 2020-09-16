@@ -14,29 +14,34 @@ app.get('/apps', (req, res) => {
     let results = [...APPS]
 
     if (sort) {
+
         if (!['Rating', 'App'].includes(sort)) {
-            return res
-                .status(400)
-                .send('Must sort by "Rating" or "App".');
+
+            return res.status(400).send('Must sort by "Rating" or "App".');
         }
     }
+
+    if(genres) {
+        if(!validGenres.includes(genres)) {
+            return res.status(400).send('Invalid Genre type. Valid genres include: Action, Puzzle, Strategy, Casual, Arcade, or Card')
+        }
+    }
+
     if (genres)
-        results = results.filter(app =>
-            app
-                .Genres
-                .toLowerCase()
-                .includes(genres.toLowerCase()))
+        results = results.filter(app => app.Genres.toLowerCase().includes(genres.toLowerCase()))
+
     if (sort) {
+
         if (sort === 'Rating') {
             results = results.sort((a, b) => {
-                // return a[sort] > b[sort] ? 1 : a[sort] < b[sort] ? -1 : 0;
                 return b[sort] - a[sort]
             })
         } else {
+
             results = results.sort((a, b) => {
 
                 return a[sort].toUpperCase() > b[sort].toUpperCase() ? 1 : a[sort].toUpperCase() < b[sort].toUpperCase() ? -1 : 0;
-                
+
             })
         }
     }
@@ -46,6 +51,4 @@ app.get('/apps', (req, res) => {
 
 });
 
-app.listen(8000, () => {
-    console.log('Server is running on PORT 8000')
-})
+module.exports = app
